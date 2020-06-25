@@ -1,0 +1,63 @@
+<launch>
+
+
+  <node pkg="control" type="talker" name="talker" />
+  <node pkg="control" type="listener" name="listener" />
+
+  <node pkg="gps" type="gps_node" name="gps_node" />
+
+
+  <node pkg="ros-mpu6050-node" type="mpu6050_node" name="mpu6050_node"/>
+
+
+  <node pkg="subdom" type="subodm" name="subodm"/>
+
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="robot_localization_ekf_node_odom" clear_params="true">
+    <param name="frequency" value="10." />  
+    <param name="sensor_timeout" value="0.2" />  
+    <param name="two_d_mode" value="true" />
+    <param name="publish_tf" value="true" />
+    <param name="map_frame" value="map" />
+    <param name="odom_frame" value="odom" />
+    <param name="base_link_frame" value="base_link" />
+    <param name="world_frame" value="odom" />
+    <param name="print_diagnostics" value="true" />
+    <remap from="odometry/filtered" to="odometry/filtered_twist" />
+    <param name="twist0" value="turtle1/sensors/twist" />
+    <param name="twist0_differential" value="false"/>
+   
+ <rosparam param="twist0_config">[false, false, false, false, false, false,
+                                     true, true, false, false, false, true,
+                                     false, false, false]</rosparam>
+  </node>
+
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="robot_localization_ekf_node_map"  clear_params="true">
+    <param name="frequency" value="10" />  
+    <param name="sensor_timeout" value="0.2" />  
+    <param name="two_d_mode" value="true" />
+    <param name="publish_tf" value="true" />
+    <param name="map_frame" value="map" />
+    <param name="odom_frame" value="odom" />
+    <param name="base_link_frame" value="base_link" />
+    <param name="world_frame" value="map" />
+    <param name="twist0" value="turtle1/sensors/twist" />
+   
+ <rosparam param="twist0_config">[false, false, false, false, false, false,
+                                     true, true, false, false, false, true,
+                                     false, false, false]</rosparam>
+    <param name="pose0" value="turtle1/sensors/pose" />
+   
+ <rosparam param="pose0_config">[true, true, false, false, false, true,
+                                    false, false, false, false, false, false,
+                                    false, false, false]</rosparam>
+    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+  </node>
+
+
+  <node pkg="robot_localization_demo" type="transformation_visualization_node" name="transformation_visualization_node" />
+
+</launch> 
+
+
